@@ -541,10 +541,10 @@ rankTest('rating test return A', t => {
   t.is(result, 'A');
 })
 
-rankTest('rating test return A', t => {
+rankTest('rating test return B', t => {
   const voyage = {
     zone: 'west-indies',
-    length: 5,
+    length: 15,
   };
   const history = [
     {
@@ -566,30 +566,6 @@ rankTest('rating test return A', t => {
     {
       zone: 'west-indies',
       profit: 15,
-    },
-    {
-      zone: 'china',
-      profit: 7,
-    },
-    {
-      zone: 'west-indies',
-      profit: 15,
-    },
-    {
-      zone: 'west-africa',
-      profit: 7,
-    },
-    {
-      zone: 'west-africa',
-      profit: 7,
-    },
-    {
-      zone: 'west-africa',
-      profit: 7,
-    },
-    {
-      zone: 'west-africa',
-      profit: 7,
     }
   ];
 
