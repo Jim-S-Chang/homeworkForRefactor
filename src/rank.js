@@ -2,9 +2,7 @@ function voyageRisk (voyage) {
   let result = 1;
   result += voyage.length > 4 ? 2: 0;
   result += voyage.length > 8 ? voyage.length - 8: 0;
-  if (voyage.zone === 'china' || voyage.zone === 'east-indies') {
-    result += 4;
-  }
+  isZoneEqualsChinaOrEastIndies(voyage.zone, () => result += 4)
   return Math.max(result, 0);
 }
 
@@ -16,26 +14,22 @@ function captainHistoryRisk (voyage, history) {
   let result = 1;
   result += history.length < 5 ? 4: 0;
   result += history.filter(v => v.profit < 0).length;
-  if (voyage.zone === 'china' && hasChina(history)) {
-    result -= 2;
-  }
+  isZoneEqualsChinaAndHasChinaHistory(voyage, history, () => result -= 2)
   return Math.max(result, 0);
 }
 
 function voyageProfitFactor (voyage, history) {
   let result = 2;
-  if (voyage.zone === 'china' || voyage.zone === 'east-indies') {
-    result += 1;
-  }
-  if (voyage.zone === 'china' && hasChina(history)) {
-    result += 3;
-    result += history.length > 10 ? 1: 0;
+  isZoneEqualsChinaOrEastIndies(voyage.zone, () => result += 1)
+
+  isZoneEqualsChinaAndHasChinaHistory(voyage, history, () => {
+    result += history.length > 10 ? 4: 3;
     result += voyage.length > 12 && voyage.length <= 18 ? 1: 0;
-  }
-  else {
+  }, () => {
     result += history.length > 8 ? 1: 0;
     result += voyage.length > 14 ? -1: 0;
-  }
+  })
+
   return result;
 }
 
@@ -45,6 +39,22 @@ function rating (voyage, history) {
   const chr = captainHistoryRisk(voyage, history);
 
   return vpf * 3 > (vr + chr * 2) ? 'A' : 'B'
+}
+
+function isZoneEqualsChinaAndHasChinaHistory(voyage, history, trueCallBack, falseCallBack=()=>{}) {
+  if (voyage.zone === 'china' && hasChina(history)) {
+    trueCallBack()
+  } else {
+    falseCallBack()
+  }
+}
+
+function isZoneEqualsChinaOrEastIndies(zone, trueCallBack, falseCallBack=()=>{}) {
+  if (zone === 'china' || zone === 'east-indies') {
+    trueCallBack()
+  } else {
+    falseCallBack()
+  }
 }
 
 module.exports = {
