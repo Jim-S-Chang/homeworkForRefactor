@@ -1,9 +1,15 @@
 function voyageRisk (voyage) {
   let result = 1;
-  result += voyage.length > 4 ? 2: 0;
-  result += voyage.length > 8 ? voyage.length - 8: 0;
+  result += plusRiskByVoyageLength(voyage.length)
   isZoneEqualsChinaOrEastIndies(voyage.zone, () => result += 4)
   return Math.max(result, 0);
+}
+
+function plusRiskByVoyageLength(length) {
+  let result = 0
+  result += length > 4 ? 2: 0;
+  result += length > 8 ? length - 8: 0;
+  return result
 }
 
 function hasChina (history) {
