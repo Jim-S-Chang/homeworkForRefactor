@@ -18,7 +18,7 @@ function hasChina (history) {
 
 function captainHistoryRisk (voyage, history) {
   let result = 1;
-  result += history.length < 5 ? 4: 0;
+  plusByLengthIsBiggerThan(-history.length, -5, () => { result += 4 })
   result += history.filter(v => v.profit < 0).length;
   isZoneEqualsChinaAndHasChinaHistory(voyage, history, () => result -= 2)
   return Math.max(result, 0);
@@ -29,14 +29,23 @@ function voyageProfitFactor (voyage, history) {
   isZoneEqualsChinaOrEastIndies(voyage.zone, () => result += 1)
 
   isZoneEqualsChinaAndHasChinaHistory(voyage, history, () => {
-    result += history.length > 10 ? 4: 3;
-    result += voyage.length > 12 && voyage.length <= 18 ? 1: 0;
+    plusByLengthIsBiggerThan(history.length, 10, () => { result += 4 }, () => { result +=3 })
+    plusByLengthIsBiggerThan(voyage.length, 12, () => { result += 1 })
+    plusByLengthIsBiggerThan(voyage.length, 18, () => { result -= 1 })
   }, () => {
-    result += history.length > 8 ? 1: 0;
-    result += voyage.length > 14 ? -1: 0;
+    plusByLengthIsBiggerThan(history.length, 8, () => { result += 1 })
+    plusByLengthIsBiggerThan(voyage.length, 14, () => { result -= 1 })
   })
 
   return result;
+}
+
+function plusByLengthIsBiggerThan(length, number, trueCallBack, falseCallBack=()=>{}) {
+  if (length > number) {
+    trueCallBack()
+  } else {
+    falseCallBack()
+  }
 }
 
 function rating (voyage, history) {
